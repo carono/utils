@@ -1,4 +1,4 @@
-unit cutils;
+unit cUtils;
 
 {$mode objfpc}{$H+}
 interface
