@@ -9,32 +9,35 @@ uses
 type
   TStringArray = array of string;
 
-function Utf8ToCp1251(s: ansistring): ansistring;
-function cp1251ToUrf8(s: ansistring): ansistring;
-function IntVersionToStr(version: integer; section: shortint = 3; delimiter: char = '.'): string;
-function StrToIntVersion(version: string; section: shortint = 3; delimiter: char = '.'): integer;
+function Utf8ToCp1251(s: AnsiString): AnsiString;
+function cp1251ToUrf8(s: AnsiString): AnsiString;
+function IntVersionToStr(version: Integer; section: shortint = 3; delimiter: char = '.'): string;
+function StrToIntVersion(version: string; section: shortint = 3; delimiter: char = '.'): Integer;
 function MD5(str: string): string;
 function MD5File(Path: string): string;
-function PrepareMessage(Message: ansistring): ansistring;
-function GetPreparedMessage(Message: ansistring): ansistring;
-function SizeOfVariant(Value: variant): integer;
+function PrepareMessage(Message: AnsiString): AnsiString;
+function GetPreparedMessage(Message: AnsiString): AnsiString;
+function SizeOfVariant(Value: variant): Integer;
 function FastStringReplace(const S: string; OldPattern: string; const NewPattern: string;
   Flags: TReplaceFlags = [rfReplaceAll]): string;
 function JSONTypeToVariant(JSONData: TJSONData): variant;
 procedure Explode(var a: TStringArray; Border, S: string);
 function UrlEncode(url: string): string;
-function IpToInt(IP: string): integer;
-function IntToIp(IPint: integer): string;
+function IpToInt(IP: string): Integer;
+function IntToIp(IPint: Integer): string;
 function SortInputParams(AParamstr: string = ''): string;
 function StringReplaceExt(const S: string; OldPattern, NewPattern: array of string; Flags: TReplaceFlags): string;
-function toVisibleChars(AString:string):string;
+function toVisibleChars(AString: string): string;
+function TrimP(const S: unicodestring; APattern: string): unicodestring;
+function TrimLeftP(const S: unicodestring; APattern: string): unicodestring;
+function TrimRightP(const S: unicodestring; APattern: string): unicodestring;
 
 implementation
 
 procedure Explode(var a: TStringArray; Border, S: string);
 var
   S2: string;
-  i: integer;
+  i: Integer;
 begin
   i := 0;
   S2 := S + Border;
@@ -56,20 +59,20 @@ begin
   Result := url;
 end;
 
-function IpToInt(IP: string): integer;
+function IpToInt(IP: string): Integer;
 begin
   Result := 1;
 end;
 
-function IntToIp(IPint: integer): string;
+function IntToIp(IPint: Integer): string;
 begin
   Result := '0.0.0.0';
 end;
 
 function SortInputParams(AParamstr: string = ''): string;
 var
-  i: integer;
-  SL,Params: TStringList;
+  i: Integer;
+  SL, Params: TStringList;
 begin
   SL := TStringList.Create;
   Params := TStringList.Create;
@@ -106,7 +109,7 @@ end;
 
 function StringReplaceExt(const S: string; OldPattern, NewPattern: array of string; Flags: TReplaceFlags): string;
 var
-  i: integer;
+  i: Integer;
 begin
   Assert(Length(OldPattern) = (Length(NewPattern)));
   Result := S;
@@ -116,7 +119,59 @@ end;
 
 function toVisibleChars(AString: string): string;
 begin
-  Result := StringReplaceExt(AString, [#0,'\0',#1,#2,#3,#4,#5,#6,#7,#8,#9,#10,#11,#12,#13,#14,#15,#16,#17,#18,#19,#20,#21,#22,#23,#24,#25,#26,#27,#28,#29,#30,#31,#32], ['|','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░','░'], [rfReplaceAll]);
+  Result := StringReplaceExt(AString, [#0, '\0', #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, #11, #12,
+    #13, #14, #15, #16, #17, #18, #19, #20, #21, #22, #23, #24, #25, #26, #27, #28, #29, #30, #31, #32],
+    ['|', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░',
+    '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░', '░'], [rfReplaceAll]);
+end;
+
+function TrimP(const S: unicodestring; APattern: string): unicodestring;
+var
+  Ofs, i, Len: sizeint;
+  c: char;
+begin
+  for i := 1 to Length(APattern) do
+  begin
+    c := APattern[i];
+    len := Length(S);
+    while (Len > 0) and (S[Len] <= c) do
+      Dec(Len);
+    Ofs := 1;
+    while (Ofs <= Len) and (S[Ofs] <= c) do
+      Inc(Ofs);
+    Result := Copy(S, Ofs, 1 + Len - Ofs);
+  end;
+end;
+
+function TrimLeftP(const S: unicodestring; APattern: string): unicodestring;
+var
+  i, l, j: sizeint;
+  c: char;
+begin
+  for j := 1 to Length(APattern) do
+  begin
+    c := APattern[j];
+    l := length(s);
+    i := 1;
+    while (i <= l) and (s[i] <= c) do
+      Inc(i);
+    Result := copy(s, i, l);
+  end;
+end;
+
+function TrimRightP(const S: unicodestring; APattern: string): unicodestring;
+var
+  i, l: sizeint;
+  c: char;
+begin
+  for i := 1 to Length(APattern) do
+  begin
+    c := APattern[i];
+    l := length(s);
+    while (l > 0) and (s[l] <= c) do
+      Dec(l);
+    Result := copy(s, 1, l);
+  end;
 end;
 
 function MD5File(Path: string): string;
@@ -124,17 +179,17 @@ begin
   Result := MD5Print(MDFile(Path, MD_VERSION_5, 1024));
 end;
 
-function PrepareMessage(Message: ansistring): ansistring;
+function PrepareMessage(Message: AnsiString): AnsiString;
 begin
   Result := StringReplaceExt(Message, ['\', #0], ['\\', '\0'], [rfReplaceAll]);
 end;
 
-function GetPreparedMessage(Message: ansistring): ansistring;
+function GetPreparedMessage(Message: AnsiString): AnsiString;
 begin
   Result := StringReplaceExt(Message, ['\\', '\0'], ['\', #0], [rfReplaceAll]);
 end;
 
-function SizeOfVariant(Value: variant): integer;
+function SizeOfVariant(Value: variant): Integer;
 var
   vtype: TVarType;
 begin
@@ -170,7 +225,7 @@ end;
 function FastStringReplace(const S: string; OldPattern: string; const NewPattern: string;
   Flags: TReplaceFlags = [rfReplaceAll]): string;
 var
-  I, J, Idx: integer;
+  I, J, Idx: Integer;
   IsEqual: boolean;
   UpperFindStr: string;
   pS: PChar;
@@ -276,13 +331,13 @@ begin
 
 end;
 
-function Utf8ToCp1251(s: ansistring): ansistring;
+function Utf8ToCp1251(s: AnsiString): AnsiString;
 var
-  str: ansistring;
-  i, j, n, x: integer;
-  oem: ansistring;
-  s1: ansistring;
-  loc: ansistring;
+  str: AnsiString;
+  i, j, n, x: Integer;
+  oem: AnsiString;
+  s1: AnsiString;
+  loc: AnsiString;
   ex: boolean;
 
 begin
@@ -458,12 +513,12 @@ begin
 
 end;
 
-function cp1251ToUrf8(s: ansistring): ansistring;
+function cp1251ToUrf8(s: AnsiString): AnsiString;
 var
-  str: ansistring;
-  i, j, n, x: integer;
-  oem: ansistring;
-  loc: ansistring;
+  str: AnsiString;
+  i, j, n, x: Integer;
+  oem: AnsiString;
+  loc: AnsiString;
   ex: boolean;
 
 begin
@@ -494,10 +549,10 @@ begin
   Result := str;
 end;
 
-function IntVersionToStr(version: integer; section: shortint; delimiter: char): string;
+function IntVersionToStr(version: Integer; section: shortint; delimiter: char): string;
 var
   s, Ver1: string;
-  x, i: integer;
+  x, i: Integer;
 begin
   try
     Ver1 := IntToStr(version);
@@ -520,9 +575,9 @@ begin
   end;
 end;
 
-function StrToIntVersion(version: string; section: shortint; delimiter: char): integer;
+function StrToIntVersion(version: string; section: shortint; delimiter: char): Integer;
 var
-  i, j: integer;
+  i, j: Integer;
   t, s: string;
 begin
   Result := 0;
