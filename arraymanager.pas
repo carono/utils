@@ -11,25 +11,27 @@ type
 
   TArrayManager = class(TObject)
   protected
+  FOwner1: TObject;
     function GetItem(index: Integer): TObject; virtual;
+    function GetOwner: TObject; virtual;
+    procedure SetOwner(AValue: TObject);
   private
     Items1: array of TObject;
     Position: Integer;
-    FOwner1: TObject;
     function GetCount: Integer;
   public
-    property Owner: TObject read FOwner1 write FOwner1;
+    property Owner: TObject read GetOwner write SetOwner;
     procedure Clear; virtual;
     property Count: Integer read GetCount;
     property Item[index: Integer]: TObject read GetItem;
     function Add(AObject: TObject): TObject; virtual;
     function GetItemIndex(AObject: TObject): Integer;
-    function Extract(AObject: TObject): TObject;
+    function Extract(AObject: TObject): TObject; virtual;
     procedure Assign(ASource: TObject); virtual;
     function Current(): TObject; virtual;
-    function Next(): TObject;
+    function Next(): TObject; virtual;
     procedure Reset();
-    function Prev(): TObject;
+    function Prev(): TObject; virtual;
     constructor Create(AOwner: TObject); virtual;
     destructor Destroy; virtual;
   end;
@@ -42,6 +44,16 @@ implementation
 function TArrayManager.GetCount: Integer;
 begin
   Result := Length(Items1);
+end;
+
+procedure TArrayManager.SetOwner(AValue: TObject);
+begin
+  FOwner1 := AValue;
+end;
+
+function TArrayManager.GetOwner: TObject;
+begin
+  Result := FOwner1;
 end;
 
 function TArrayManager.GetItem(index: Integer): TObject;
