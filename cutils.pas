@@ -31,6 +31,7 @@ function toVisibleChars(AString: string): string;
 function TrimP(const S: unicodestring; APattern: string): unicodestring;
 function TrimLeftP(const S: unicodestring; APattern: string): unicodestring;
 function TrimRightP(const S: unicodestring; APattern: string): unicodestring;
+function StrDateTimeCorrected(s: AnsiString): boolean;
 
 implementation
 
@@ -171,6 +172,16 @@ begin
     while (l > 0) and (s[l] <= c) do
       Dec(l);
     Result := copy(s, 1, l);
+  end;
+end;
+
+function StrDateTimeCorrected(s: AnsiString): boolean;
+begin
+  try
+    StrToDate(s);
+    Result := True;
+  except
+    Result := False;
   end;
 end;
 
