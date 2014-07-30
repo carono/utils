@@ -11,7 +11,7 @@ type
 
   TArrayManager = class(TObject)
   protected
-  FOwner1: TObject;
+    FOwner1: TObject;
     function GetItem(index: Integer): TObject; virtual;
     function GetOwner: TObject; virtual;
     procedure SetOwner(AValue: TObject);
@@ -101,14 +101,18 @@ var
 begin
   i := GetItemIndex(AObject);
   c := 0;
+  Result := nil;
   if (i <> -1) then
+  begin
     for j := 0 to Count - 1 do
     begin
       Items1[j] := Items1[c];
       if j <> i then
         Inc(c);
     end;
-  SetLength(Items1, c);
+    SetLength(Items1, c);
+    Result := AObject;
+  end;
 end;
 
 procedure TArrayManager.Assign(ASource: TObject);
