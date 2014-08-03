@@ -9,6 +9,7 @@ var
 
 function IsNothing(var AVar): boolean;
 procedure SetNothing(var AVar);
+function Ternary(AIF: boolean; AThen: variant; AElse: variant): variant;
 
 implementation
 
@@ -20,6 +21,14 @@ end;
 procedure SetNothing(var AVar);
 begin
   pointer(AVar) := NothingVariable;
+end;
+
+function Ternary(AIF: boolean; AThen: variant; AElse: variant): variant;
+begin
+  if (AIF) then
+    Result := AThen
+  else
+    Result := AElse;
 end;
 
 initialization

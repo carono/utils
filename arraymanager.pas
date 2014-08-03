@@ -17,13 +17,16 @@ type
     procedure SetOwner(AValue: TObject);
   private
     Items1: array of TObject;
-    Position: Integer;
+    FPosition: Integer;
     function GetCount: Integer;
+    function GetEof: boolean;
   public
+    property Position: Integer read FPosition write FPosition;
     property Owner: TObject read GetOwner write SetOwner;
     procedure Clear; virtual;
     property Count: Integer read GetCount;
     property Item[index: Integer]: TObject read GetItem;
+    property EOF: boolean read GetEof;
     function Add(AObject: TObject): TObject; virtual;
     function GetItemIndex(AObject: TObject): Integer;
     function Extract(AObject: TObject): TObject; virtual;
@@ -44,6 +47,11 @@ implementation
 function TArrayManager.GetCount: Integer;
 begin
   Result := Length(Items1);
+end;
+
+function TArrayManager.GetEof: boolean;
+begin
+  Result := Position >= Count;
 end;
 
 procedure TArrayManager.SetOwner(AValue: TObject);
@@ -128,7 +136,7 @@ begin
     else
       Result := nil
   else
-    Result := GetItem(Position);
+    Result := GetItem(Position)
 end;
 
 function TArrayManager.Next: TObject;
@@ -136,7 +144,7 @@ begin
   Result := nil;
   if Count > 0 then
   begin
-    Inc(Position);
+    Inc(FPosition);
     if Position < Count then
       Result := GetItem(Position);
   end;
